@@ -31,6 +31,7 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javafx.beans.property.StringProperty;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
@@ -51,6 +52,7 @@ import qupath.lib.gui.QuPathGUI;
 import qupath.lib.gui.commands.interfaces.PathCommand;
 import qupath.lib.gui.helpers.DisplayHelpers;
 import qupath.lib.gui.panels.classify.ClassifierBuilderPanel;
+import qupath.lib.gui.prefs.PathPrefs;
 
 
 /**
@@ -65,6 +67,9 @@ public class WekaClassifierCommand implements PathCommand {
 
 	final private static Logger logger = LoggerFactory.getLogger(WekaClassifierCommand.class);
 
+	final private static StringProperty wekaPath = PathPrefs.createPersistentPreference("wekaPath", null);
+	
+	
 	private QuPathGUI qupath;
 	
 	private Stage dialog;
@@ -72,6 +77,17 @@ public class WekaClassifierCommand implements PathCommand {
 	
 	public WekaClassifierCommand(final QuPathGUI qupath) {
 		this.qupath = qupath;
+		// Add Weka path
+		updateExtensionPath();
+		// Listen for changes to path property
+		wekaPath.addListener((v, o, n) -> updateExtensionPath());
+	}
+	
+	private void updateExtensionPath() {
+		String path = wekaPath.get();
+		if (path != null && new File(path).exists()) {
+			qupath.addExtensionJar(new File(path));
+		}
 	}
 	
 	public Stage getDialog() {
@@ -131,29 +147,32 @@ public class WekaClassifierCommand implements PathCommand {
 		} catch (NoClassDefFoundError e) {
 			dialog = null;
 			
-			// Since we're running this (i.e. an extension), we really *should* have an extensions directory...
-			File dirExtensions = QuPathGUI.getExtensionDirectory();
-			if (dirExtensions == null || !dirExtensions.isDirectory()) {
-				DisplayHelpers.showErrorMessage("Weka classifier error", "Cannot find either Weka or an extensions directory.  Please reinstall the Weka extension.");				
-				return;
-			}
+//			// Since we're running this (i.e. an extension), we really *should* have an extensions directory...
+//			File dirExtensions = QuPathGUI.getExtensionDirectory();
+//			if (dirExtensions == null || !dirExtensions.isDirectory()) {
+//				DisplayHelpers.showErrorMessage("Weka classifier error", "Cannot find either Weka or an extensions directory.  Please reinstall the Weka extension.");				
+//				return;
+//			}
 			
 			// Prompt to select path to Weka
-			if (!DisplayHelpers.showConfirmDialog("Set path to Weka", "Cannot find Weka installation directory.\nDo you want to select it manually?"))
+			if (!DisplayHelpers.showConfirmDialog("Set path to weka.jar", "Cannot find weka.jar.\n\nDo you want to select it manually from your Weka installation?"))
 				return;
-			File dirWeka = QuPathGUI.getDialogHelper(qupath.getStage()).promptForDirectory(null);
-			if (dirWeka == null || !dirWeka.isDirectory()) {
-				logger.error("No Weka directory selected.");
+			File fileWeka = QuPathGUI.getDialogHelper(qupath.getStage()).promptForFile("Select weka.jar", null, "Weka JAR file", new String[]{".jar"});
+			if (fileWeka == null || !fileWeka.isFile()) {
+				logger.error("No Weka JAR file selected.");
 				return;
 			}
 			
-			// Create a symbolic link in the extensions directory, and add refresh extensions to update classpath
-			try {
-				Files.createSymbolicLink(new File(dirExtensions, "weka").toPath(), dirWeka.toPath());
-			} catch (IOException e1) {
-				DisplayHelpers.showErrorNotification("Weka link error", e1);
-				return;
-			}
+			// Set the path
+			wekaPath.set(fileWeka.getAbsolutePath());
+			
+//			// Create a symbolic link in the extensions directory, and add refresh extensions to update classpath
+//			try {
+//				Files.createSymbolicLink(new File(dirExtensions, "weka").toPath(), dirWeka.toPath());
+//			} catch (IOException e1) {
+//				DisplayHelpers.showErrorNotification("Weka link error", e1);
+//				return;
+//			}
 			qupath.refreshExtensions(false);
 			
 			// Now try again...
