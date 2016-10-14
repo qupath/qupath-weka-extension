@@ -12,14 +12,12 @@ The **QuPath Weka Extension** enables classifiers from the popular machine learn
 
 * Download *Weka* from http://www.cs.waikato.ac.nz/ml/weka/downloading.html
 * Download the latest release of the *QuPath Weka Extension* from [here](https://github.com/qupath/qupath-weka-extension/releases/latest)
-* Start running QuPath and drag the ```qupath-weka-extension-0.0.1.jar``` file onto the main window to install it
+* Start running QuPath and drag the ```qupath-weka-extension.jar``` file onto the main window to install it
 * Do *either* one of the following:
-	1. Run the *Classify &rarr; Create detection classifier (Weka)* command and, when prompted, point QuPath to the directory where Weka is installed
-	2. Find the ```weka.jar``` file from within your Weka installation, and drag it onto QuPath
+	1. Run the *Classify &rarr; Create detection classifier (Weka)* command
+	2. If prompted, find the ```weka.jar``` file from within your Weka installation, and select it in the file chooser
 	
-For the final step, depending upon the platform and where Weka is installed, there may be permissions issues that prevent method i. from being successful... in which case method ii. is required.
-
-If the above steps are successful, then a *Classify &rarr; Create detection classifier (Weka)* command should become available within QuPath, which can be used for classifying detections as an alternative to the default *Classify &rarr; Create detection classifier* command.
+If the above steps are successful, it should be possible to use the *Classify &rarr; Create detection classifier (Weka)* command for classifying detections as an alternative to the default *Classify &rarr; Create detection classifier* command.
 
 > For more information on classifiers and their usefulness, see the [Classifying objects](https://github.com/qupath/qupath/wiki/Classifying-objects) section of the documentation.
 
