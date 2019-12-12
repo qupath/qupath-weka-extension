@@ -1,8 +1,9 @@
 QuPath Weka Extension
 =====================
 
-The **QuPath Weka Extension** enables classifiers from the popular open source machine learning library [**Weka**](http://www.cs.waikato.ac.nz/ml/weka/) to be used from within [**QuPath**](http://qupath.github.io), and also facilitates the export of QuPath data in a Weka-friendly format.
+The **QuPath Weka Extension** enables classifiers from the popular open source machine learning library [**Weka**](http://www.cs.waikato.ac.nz/ml/weka/) to be used from within [**QuPath v0.1.2**](http://qupath.github.io), and also facilitates the export of QuPath data in a Weka-friendly format.
 
+> The **QuPath Weka Extension** is **not** compatible with QuPath v0.2.0.
 
 > The **QuPath Weka Extension** is **not** an official piece of software by the developers of Weka, nor does it include or modify Weka in any way.  Rather, it simply enables some of the useful features of Weka to be accessible from within QuPath's user interface.
 
